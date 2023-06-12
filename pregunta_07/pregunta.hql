@@ -45,4 +45,9 @@ LOAD DATA LOCAL INPATH 'data1.csv' INTO TABLE tbl1;
 /*
     >>> Escriba su respuesta a partir de este punto <<<
 */
-
+INSERT OVERWRITE DIRECTORY 'output'
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ','
+SELECT c2, concat_ws(':', collect_list(c1_value_sorted)) AS c1_values
+FROM tbl0
+LATERAL VIEW explode(sort_array(split(c1, ','))) t AS c1_value_sorted
+GROUP BY c2;
